@@ -1,8 +1,9 @@
 // Variables
+let myLeads = [];
+
 const saveInputButton = document.querySelector("#save-input-button");
 const inputElement = document.querySelector("#input-element");
 const leadsElement = document.querySelector("#leads-element");
-let myLeads = [];
 const deleteInputButton = document.querySelector("#delete-input-button");
 const saveTabButton = document.querySelector("#save-tab-button");
 const leadsFromLocalStorage = JSON.parse(localStorage.getItem("myLeads"));
@@ -13,10 +14,6 @@ if (leadsFromLocalStorage) {
   myLeads = leadsFromLocalStorage;
   render(myLeads);
 }
-
-const tabs = [
-  { url: "https://emmanuel4reals.netlify.app", title: "Emmanuel's Profile" },
-];
 
 // eventListeners
 saveInputButton.addEventListener("click", () => {
@@ -38,7 +35,11 @@ deleteInputButton.addEventListener("click", () => {
 });
 
 saveTabButton.addEventListener("click", () => {
-  console.log(tabs[0].url, tabs[0].title);
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    myLeads.push(tabs[0].url);
+    localStorage.setItem("myLeads", JSON.stringify(myLeads));
+    render(myLeads);
+  });
 });
 
 // Functions
@@ -57,5 +58,3 @@ function render(whatToRender) {
   }
   leadsElement.innerHTML = listItems;
 }
-
-function displayArray([first, second, third]) {}
